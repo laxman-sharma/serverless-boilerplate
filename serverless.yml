@@ -1,0 +1,33 @@
+# NOTE: update this with your service name
+service: buddoh
+
+# Create an optimized package for our functions 
+package:
+  individually: true
+
+custom:
+  LOGOUT_URL: 'https://www.google.com'
+  CALLBACK_URL: 'https://www.google.com'
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: ap-south-1
+  versionFunctions: false
+  memorySize: 512
+  timeout: 10
+
+functions:
+  send_verification_mail:
+    handler: send_verification_mail.main
+
+resources:
+  # Cognito
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
